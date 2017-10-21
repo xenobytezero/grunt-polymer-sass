@@ -1,0 +1,28 @@
+{
+    "name": "grunt-polymer-sass",
+    "version": "1.0.0",
+    "description": "grunt-polymer-sass",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/xenobytezero/grunt-polymer-sass.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/xenobytezero/grunt-polymer-sass/issues"
+    },
+    "homepage": "https://github.com/xenobytezero/grunt-polymer-sass#readme",
+    "dependencies": {
+        "cheerio": "^0.22.0"
+    },
+    "peerDependencies": {
+        "node-sass": "^4.5.3"
+    },
+    "devDependencies": {
+        "@types/grunt": "^0.4.22"
+    }
+}
