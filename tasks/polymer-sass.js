@@ -12,6 +12,28 @@ module.exports = (grunt) => {
         let options = this.options({
         });
 
+        function parseSass($, sourcePath) {
+
+            // set up SASS config
+            let sassConfig = {
+                file: sourcePath,
+                outputStyle: 'compressed'
+            };
+
+            // compile the sass
+            let renderedSass = nodeSass.renderSync(sassConfig).css.toString();
+            renderedSass = renderedSass.replace('/n' ,'');
+
+            return renderedSass;
+
+        }
+
+        function parseCss($, sourcePath){
+            let content = grunt.file.read(sourcePath);
+            content = content.replace('/n' ,'');
+            return content;
+        }
+
         this.files.forEach((files) => {
 
             let fileSrc = path.resolve(files.src[0]);
@@ -40,27 +62,41 @@ module.exports = (grunt) => {
                 let ele = $(rootEle);
                 let eleParent = ele.parent();
 
-                let relSassPath = $(ele).attr('href');
+                let lang = ele.attr('lang');
 
-                // resolve the full path of the SASS file
-                let sassPath = path.join(fileRootDir, relSassPath);
-                grunt.verbose.writeln('Full SASS Path - ' + sassPath);
+                grunt.verbose.writeln('Lang - '  + lang);
 
-                if (!grunt.file.exists(sassPath)) {
-                    grunt.fail.fatal('Could not find linked SASS file - ' + sassPath);
+                if (lang === undefined) {
+                    return;
                 }
 
-                // set up SASS config
-                let sassConfig = {
-                    file: sassPath,
-                    outputStyle: 'compressed'
-                };
+                let relSourcePath = $(ele).attr('href');
+                
+                // resolve the full path of the SASS file
+                let sourcePath = path.join(fileRootDir, relSourcePath);
+                grunt.verbose.writeln('Full Source Path - ' + sourcePath);
+    
+                if (!grunt.file.exists(sourcePath)) {
+                    grunt.fail.fatal('Could not find linked source file - ' + sourcePath);
+                }
+    
+                let content;
 
-                // compile the sass
-                let renderedSass = nodeSass.renderSync(sassConfig).css.toString();
-                renderedSass.replace('/n' ,'');
+                switch(lang){
 
-                eleParent.append('<style>' + renderedSass + '</style>');
+                    case 'sass': {
+                        content = parseSass($, sourcePath);
+                        break;
+                    }
+
+                    case 'css': {
+                        content = parseCss($, sourcePath);
+                        break;
+                    }
+
+                }
+
+                eleParent.append('<style>' + content + '</style>');
                 ele.remove();
 
             });
